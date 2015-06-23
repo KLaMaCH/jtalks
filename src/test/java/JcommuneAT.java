@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class JcommuneAT {
-    private String[] registrationData = {"USERNAME10", "testtreesol+10@yandex.ru", "123"};
+
+    private String[] registrationData = {"USERNAME1", "testtreesol+10@yandex.ru", "123"};
     private String[] mailLoginData = {"testtreesol@yandex.ru", "123456TS"};
-    private String[] loginData = {"klamach89@gmail.com", "145278Goo"};
+    private String[] loginData = {"KLaMaCH", "145278Goo"};
     private String[] topicdata = {"NewTopic Subject", "This topic was created by auto-test"};
     private WebDriver driver;
 
@@ -34,31 +35,27 @@ public class JcommuneAT {
         return new File(path);
     }
 
-
     @BeforeTest
     public void startWebDriver(){
         driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
     }
 
-
-    @Test
+    @Test(priority = 1)
     public void Registration() throws Exception{
-        driver.get("http://qa.jtalks.org/jcommune/");
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-        makeSrceenshot(driver, "mainpage");
-
-        driver.findElement(By.id("top-signup-link")).click();
+        driver.get("http://qa.jtalks.org/jcommune/user/new");
         makeSrceenshot(driver, "registration");
 
-        WebElement username = driver.findElement(By.id("username"));
+        WebElement username = driver.findElement(By.id("userDto.username"));
         username.clear();
         username.sendKeys(registrationData[0]);
 
-        WebElement email = driver.findElement(By.id("email"));
+        WebElement email = driver.findElement(By.id("userDto.email"));
         email.clear();
         email.sendKeys(registrationData[1]);
 
-        WebElement password = driver.findElement(By.id("password"));
+        WebElement password = driver.findElement(By.id("userDto.password"));
         password.clear();
         password.sendKeys(registrationData[2]);
 
@@ -66,6 +63,9 @@ public class JcommuneAT {
         passwordConfirm.clear();
         passwordConfirm.sendKeys(registrationData[2]);
         passwordConfirm.submit();
+        Assert.assertTrue(driver.findElement(By.xpath("//h1[contains(.,'registered') or contains(.,'зарегистрированы')] ")).isDisplayed());
+
+        Thread.sleep(5000);
 
         driver.get("https://mail.yandex.ru/");
         WebElement ya_email = driver.findElement(By.name("login"));
@@ -85,13 +85,12 @@ public class JcommuneAT {
         }
         Assert.assertTrue(driver.getCurrentUrl().equals("http://qa.jtalks.org/jcommune/"));
         makeSrceenshot(driver, "RegSucsess");
-
     }
 
-    @Test(priority = 1, alwaysRun = true)
+    @Test(priority = 2)
     public void NewTopic() throws Exception {
+
         driver.get("http://qa.jtalks.org/jcommune/login");
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         WebElement username = driver.findElement(By.id("dialog-userName"));
         username.clear();

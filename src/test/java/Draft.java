@@ -18,9 +18,8 @@ import java.util.concurrent.TimeUnit;
  * Created by kolchanov on 23.06.15.
  */
 public class Draft {
-
-    private String[] mailLoginData = {"testtreesol@yandex.ru", "123456TS"};
-    private String[] loginData = {"klamach89@gmail.com", "145278Goo"};
+    private String[] loginData = {"KLaMaCH", "145278Goo"};
+    private String[] topicdata = {"NewTopic Subject", "This topic was created by auto-test"};
     private WebDriver driver;
 
     public static File makeSrceenshot(WebDriver driver, String pathName) {
@@ -41,30 +40,42 @@ public class Draft {
         driver = new FirefoxDriver();
     }
 
-    @Test
-    public void Registration() throws Exception {
-        driver.get("http://qa.jtalks.org/jcommune/");
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+    @Test(priority = 1, alwaysRun = true)
+    public void NewTopic() throws Exception {
+        driver.get("http://qa.jtalks.org/jcommune/login");
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-        driver.get("https://mail.yandex.ru/");
-        WebElement ya_email = driver.findElement(By.name("login"));
-        ya_email.clear();
-        ya_email.sendKeys(mailLoginData[0]);
+        WebElement username = driver.findElement(By.id("dialog-userName"));
+        username.clear();
+        username.sendKeys(loginData[0]);
 
-        WebElement ya_password = driver.findElement(By.name("passwd"));
-        ya_password.clear();
-        ya_password.sendKeys(mailLoginData[1]);
-        ya_password.submit();
-        Thread.sleep(500);
+        WebElement password = driver.findElement(By.id("dialog-password"));
+        password.clear();
+        password.sendKeys(loginData[1]);
+        password.submit();
 
-        driver.findElement(By.xpath("//a[contains(@href,'#message')]")).click();
-        driver.findElement(By.xpath("//a[contains(@href,'jtalks')]")).click();
-        for (String handle : driver.getWindowHandles()) {
-            driver.switchTo().window(handle);
-        }
-        Assert.assertTrue(driver.getCurrentUrl().equals("http://qa.jtalks.org/jcommune/"));
-        makeSrceenshot(driver, "RegSucsess");
+        driver.get("http://qa.jtalks.org/jcommune/branches/3");
+        makeSrceenshot(driver, "branch-page");
 
+        driver.findElement(By.xpath("//a[contains(@href,'/jcommune/topics/new')]")).click();
+        makeSrceenshot(driver, "newtopicpage");
+
+        WebElement subject = driver.findElement(By.id("subject"));
+        subject.clear();
+        subject.sendKeys(topicdata[0]);
+
+        if(!driver.findElement(By.id("sticked")).isSelected())
+            driver.findElement(By.id("sticked")).click();
+        if(!driver.findElement(By.id("announcement")).isSelected())
+            driver.findElement(By.id("announcement")).click();
+
+        WebElement messege = driver.findElement(By.id("postBody"));
+        messege.clear();
+        messege.sendKeys(topicdata[1]);
+        messege.submit();
+
+        Thread.sleep(1000);
+        makeSrceenshot(driver, "newtopic");
     }
 
 
