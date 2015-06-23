@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class JcommuneAT {
 
-    private String[] registrationData = {"USERNAME1", "testtreesol+10@yandex.ru", "123"};
+    private String[] registrationData = {"USERNAME1", "testtreesol+1@yandex.ru", "123"};
     private String[] mailLoginData = {"testtreesol@yandex.ru", "123456TS"};
     private String[] loginData = {"KLaMaCH", "145278Goo"};
     private String[] topicdata = {"NewTopic Subject", "This topic was created by auto-test"};
